@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ScannerViewController: UIViewController {
 
@@ -26,7 +27,17 @@ class ScannerViewController: UIViewController {
         // Mock functional with scanned code
         print(code)
     }
-    
 
+}
+
+// MARK: AVCaptureMetadataOutputObjectsDelegate
+extension ScannerViewController: AVCaptureMetadataOutputObjectsDelegate {
+    public func metadataOutput(
+        _ output: AVCaptureMetadataOutput,
+        didOutput metadataObjects: [AVMetadataObject],
+        from connection: AVCaptureConnection
+    ) {
+        self.scanner?.scannerDelegate(output, didOutput: metadataObjects, from: connection)
+    }
 }
 
