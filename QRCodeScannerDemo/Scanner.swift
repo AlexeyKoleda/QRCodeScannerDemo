@@ -43,4 +43,20 @@ class Scanner: NSObject {
         }
         return captureSession
     }
+    
+    private func metaObjectTypes() -> [AVMetadataObject.ObjectType] {
+        return [
+            .qr,
+            .code128,
+            .code39,
+            .code39Mod43,
+            .code93,
+            .ean13,
+            .ean8,
+            .interleaved2of5,
+            .itf14,
+            .pdf417,
+            .upce
+        ]
+    }
 }
