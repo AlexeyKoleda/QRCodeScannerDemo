@@ -13,6 +13,7 @@ class Scanner: NSObject {
     private var captureSession: AVCaptureSession?
     private var codeOutputHandler: (_ code: String) -> Void
     
+    // MARK: Initialisation
     init(
         with viewController: UIViewController,
         view: UIView,
@@ -30,6 +31,26 @@ class Scanner: NSObject {
         }
     }
     
+    // MARK: Public methods
+    func requestCaptureSessionStartRunning() {
+        guard let captureSession = self.captureSession
+        else { return }
+        
+        if !captureSession.isRunning {
+            captureSession.startRunning()
+        }
+    }
+    
+    func requestCaptureSessionStopRunning() {
+        guard let captureSession = self.captureSession
+        else { return }
+        
+        if captureSession.isRunning {
+            captureSession.stopRunning()
+        }
+    }
+    
+    // MARK: Private methods
     private func createCaptureSession() -> AVCaptureSession? {
         do {
             let captureSession = AVCaptureSession()
