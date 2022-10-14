@@ -44,6 +44,7 @@ class Scanner: NSObject {
         return captureSession
     }
     
+    // Returns an array of all the Barcodes and QRCode that we will be able to scan
     private func metaObjectTypes() -> [AVMetadataObject.ObjectType] {
         return [
             .qr,
@@ -58,5 +59,16 @@ class Scanner: NSObject {
             .pdf417,
             .upce
         ]
+    }
+    
+    private func createPreviewLayer(
+        with captureSession: AVCaptureSession,
+        view: UIView
+    ) -> AVCaptureVideoPreviewLayer {
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.frame = view.layer.bounds
+        previewLayer.videoGravity = .resizeAspectFill
+        
+        return previewLayer
     }
 }
