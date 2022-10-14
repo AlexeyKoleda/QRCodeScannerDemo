@@ -7,19 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0CD7C328F986B900AB9E2A /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0CD7C228F986B900AB9E2A /* MainViewController.swift */; };
 		FAF0B8AE28F9584400296107 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B8AD28F9584400296107 /* AppDelegate.swift */; };
 		FAF0B8B028F9584400296107 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B8AF28F9584400296107 /* SceneDelegate.swift */; };
-		FAF0B8B228F9584400296107 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B8B128F9584400296107 /* ViewController.swift */; };
+		FAF0B8B228F9584400296107 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B8B128F9584400296107 /* ScannerViewController.swift */; };
 		FAF0B8B728F9584600296107 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAF0B8B628F9584600296107 /* Assets.xcassets */; };
 		FAF0B8BA28F9584600296107 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAF0B8B828F9584600296107 /* LaunchScreen.storyboard */; };
 		FAF0B8C428F9638000296107 /* Scanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0B8C328F9638000296107 /* Scanner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0CD7C228F986B900AB9E2A /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		FAF0B8AA28F9584400296107 /* QRCodeScannerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QRCodeScannerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAF0B8AD28F9584400296107 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAF0B8AF28F9584400296107 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FAF0B8B128F9584400296107 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FAF0B8B128F9584400296107 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		FAF0B8B628F9584600296107 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAF0B8B928F9584600296107 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAF0B8BB28F9584600296107 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -58,11 +60,12 @@
 			children = (
 				FAF0B8AD28F9584400296107 /* AppDelegate.swift */,
 				FAF0B8AF28F9584400296107 /* SceneDelegate.swift */,
-				FAF0B8B128F9584400296107 /* ViewController.swift */,
+				FA0CD7C228F986B900AB9E2A /* MainViewController.swift */,
+				FAF0B8B128F9584400296107 /* ScannerViewController.swift */,
+				FAF0B8C328F9638000296107 /* Scanner.swift */,
 				FAF0B8B628F9584600296107 /* Assets.xcassets */,
 				FAF0B8B828F9584600296107 /* LaunchScreen.storyboard */,
 				FAF0B8BB28F9584600296107 /* Info.plist */,
-				FAF0B8C328F9638000296107 /* Scanner.swift */,
 			);
 			path = QRCodeScannerDemo;
 			sourceTree = "<group>";
@@ -137,10 +140,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAF0B8B228F9584400296107 /* ViewController.swift in Sources */,
+				FAF0B8B228F9584400296107 /* ScannerViewController.swift in Sources */,
 				FAF0B8AE28F9584400296107 /* AppDelegate.swift in Sources */,
 				FAF0B8C428F9638000296107 /* Scanner.swift in Sources */,
 				FAF0B8B028F9584400296107 /* SceneDelegate.swift in Sources */,
+				FA0CD7C328F986B900AB9E2A /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
