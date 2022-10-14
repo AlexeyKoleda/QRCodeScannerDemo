@@ -11,7 +11,24 @@ import AVFoundation
 class Scanner: NSObject {
     private var viewController: UIViewController
     private var captureSession: AVCaptureSession?
-    private var codeOutputandler: (_ code: String) -> Void
+    private var codeOutputHandler: (_ code: String) -> Void
+    
+    init(
+        with viewController: UIViewController,
+        view: UIView,
+        codeOutputHandler: @escaping (String) -> Void
+    ) {
+        self.viewController = viewController
+        self.codeOutputHandler = codeOutputHandler
+        
+        super.init()
+        
+        if let captureSession = self.createCaptureSession() {
+            self.captureSession = captureSession
+            let previewLayer = self.createPreviewLayer(with: captureSession, view: view)
+            view.layer.addSublayer(previewLayer)
+        }
+    }
     
     private func createCaptureSession() -> AVCaptureSession? {
         do {
