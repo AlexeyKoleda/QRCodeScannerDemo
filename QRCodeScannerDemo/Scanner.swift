@@ -8,100 +8,115 @@
 import UIKit
 import AVFoundation
 
+protocol ScannerDelegate: AnyObject {
+    func cameraView() -> UIView
+    func delegateViewController() -> UIViewController
+    func scanCompleted(withCode code: String)
+}
+
 class Scanner: NSObject {
-    private var viewController: UIViewController
-    private var captureSession: AVCaptureSession?
-    private var codeOutputHandler: (_ code: String) -> Void
+    public weak var delegate: ScannerDelegate?
+    private var captureSession : AVCaptureSession?
     
     // MARK: Initialisation
-    init(
-        with viewController: UIViewController,
-        view: UIView,
-        codeOutputHandler: @escaping (String) -> Void
-    ) {
-        self.viewController = viewController
-        self.codeOutputHandler = codeOutputHandler
-        
+    init(withDelegate delegate: ScannerDelegate) {
+        self.delegate = delegate
         super.init()
-        
-        if let captureSession = self.createCaptureSession() {
-            self.captureSession = captureSession
-            let previewLayer = self.createPreviewLayer(with: captureSession, view: view)
-            view.layer.addSublayer(previewLayer)
-        }
+        self.scannerSetup()
     }
     
     // MARK: Public methods
-    func requestCaptureSessionStartRunning() {
-        guard let captureSession = self.captureSession
-        else { return }
-        
-        if !captureSession.isRunning {
-            captureSession.startRunning()
-        }
-    }
-    
-    func requestCaptureSessionStopRunning() {
-        guard let captureSession = self.captureSession
-        else { return }
-        
-        if captureSession.isRunning {
-            captureSession.stopRunning()
-        }
-    }
-    
-    func scannerDelegate(
+    public func metadataOutput(
         _ output: AVCaptureMetadataOutput,
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
         self.requestCaptureSessionStopRunning()
         
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject
-            else { return }
+        guard let metadataObject = metadataObjects.first,
+            let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+            let scannedValue = readableObject.stringValue,
+            let delegate = self.delegate
+        else { return }
             
-            guard let stringValue = readableObject.stringValue
-            else { return }
-
-            self.codeOutputHandler(stringValue)
-        }
+        delegate.scanCompleted(withCode: scannedValue)
+    }
+    
+    public func requestCaptureSessionStartRunning() {
+        self.toggleCaptureSessionRunningState()
+    }
+    
+    public func requestCaptureSessionStopRunning() {
+        self.toggleCaptureSessionRunningState()
     }
     
     // MARK: Private methods
+    private func scannerSetup() {
+        guard let captureSession = self.createCaptureSession(),
+              let delegate = self.delegate
+        else { return }
+        
+        self.captureSession = captureSession
+        
+        let cameraView = delegate.cameraView()
+        let previewLayer = self.createPreviewLayer(with: captureSession, view: cameraView)
+        cameraView.layer.addSublayer(previewLayer)
+    }
+    
     private func createCaptureSession() -> AVCaptureSession? {
         do {
             let captureSession = AVCaptureSession()
-            
             guard let captureDevice = AVCaptureDevice.default(for: .video)
             else { return nil }
             
-            // Add device input
             let deviceInput = try AVCaptureDeviceInput(device: captureDevice)
-            if captureSession.canAddInput(deviceInput) {
-                captureSession.addInput(deviceInput)
-            }
-            
-            // Add metadata output
             let metaDataOutput = AVCaptureMetadataOutput()
-            if captureSession.canAddOutput(metaDataOutput) {
+            
+            // Add device input and metadata output
+            if captureSession.canAddInput(deviceInput)
+                && captureSession.canAddOutput(metaDataOutput) {
+                
+                captureSession.addInput(deviceInput)
                 captureSession.addOutput(metaDataOutput)
                 
-                if let vc = self.viewController as? AVCaptureMetadataOutputObjectsDelegate {
-                    metaDataOutput.setMetadataObjectsDelegate(vc, queue: DispatchQueue.main)
-                    metaDataOutput.metadataObjectTypes = self.metaObjectTypes()
-                } else {
-                    return nil
-                }
+                guard let delegate = self.delegate,
+                      let viewController = delegate.delegateViewController()
+                        as? AVCaptureMetadataOutputObjectsDelegate
+                else { return nil }
+                
+                metaDataOutput.setMetadataObjectsDelegate(viewController,
+                                                          queue: DispatchQueue.main)
+                metaDataOutput.metadataObjectTypes = self.metaObjectTypes()
+                
+                return captureSession
             }
-        } catch {
-            return nil
+        } catch let error {
+            print("failed to create capture session: \(error)")
         }
-        return captureSession
+        return nil
+    }
+    
+    private func createPreviewLayer(
+        with captureSession: AVCaptureSession,
+        view: UIView
+    ) -> AVCaptureVideoPreviewLayer {
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.frame = view.layer.bounds
+        previewLayer.videoGravity = .resizeAspectFill
+        
+        return previewLayer
+    }
+    
+    private func toggleCaptureSessionRunningState() {
+        guard let captureSession = self.captureSession
+        else { return }
+        
+        captureSession.isRunning ?
+        captureSession.stopRunning() : captureSession.startRunning()
     }
     
     // Returns an array of all the Barcodes and QRCode that we will be able to scan
-    private func metaObjectTypes() -> [AVMetadataObject.ObjectType] {
+    func metaObjectTypes() -> [AVMetadataObject.ObjectType] {
         return [
             .qr,
             .code128,
@@ -115,16 +130,5 @@ class Scanner: NSObject {
             .pdf417,
             .upce
         ]
-    }
-    
-    private func createPreviewLayer(
-        with captureSession: AVCaptureSession,
-        view: UIView
-    ) -> AVCaptureVideoPreviewLayer {
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
-        previewLayer.videoGravity = .resizeAspectFill
-        
-        return previewLayer
     }
 }
