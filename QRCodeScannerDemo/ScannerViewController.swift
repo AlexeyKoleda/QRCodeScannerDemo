@@ -9,25 +9,20 @@ import UIKit
 import AVFoundation
 
 class ScannerViewController: UIViewController {
-
+    
     var scanner: Scanner?
     
     // MARK: ViewController life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.scanner = Scanner(with: self, view: self.view, codeOutputHandler: self.handleCode)
-        if let scanner = self.scanner {
-            scanner.requestCaptureSessionStartRunning()
-        }
-    }
+        self.scanner = Scanner(withDelegate: self)
+        
+        guard let scanner = self.scanner
+        else { return }
 
-    // MARK: Public methods
-    func handleCode(_ code: String) {
-        // Mock functional with scanned code
-        print(code)
+        scanner.requestCaptureSessionStartRunning()
     }
-
 }
 
 // MARK: AVCaptureMetadataOutputObjectsDelegate
@@ -37,7 +32,28 @@ extension ScannerViewController: AVCaptureMetadataOutputObjectsDelegate {
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
-        self.scanner?.scannerDelegate(output, didOutput: metadataObjects, from: connection)
+        guard let scanner = self.scanner
+        else { return }
+        
+        scanner.metadataOutput(
+            output,
+            didOutput: metadataObjects,
+            from: connection
+        )
     }
 }
 
+// MARK: ScannerDelegate
+extension ScannerViewController: ScannerDelegate {
+    func cameraView() -> UIView {
+        return self.view
+    }
+    
+    func delegateViewController() -> UIViewController {
+        return self
+    }
+    
+    func scanCompleted(withCode code: String) {
+        print(code)
+    }
+}
