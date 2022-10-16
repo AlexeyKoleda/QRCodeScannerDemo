@@ -11,7 +11,7 @@ import AVFoundation
 protocol ScannerDelegate: AnyObject {
     func cameraView() -> UIView
     func delegateViewController() -> UIViewController
-    func scanCompleted(withCode code: String)
+    func scanCompleted(with code: String)
 }
 
 class Scanner: NSObject {
@@ -39,7 +39,7 @@ class Scanner: NSObject {
             let delegate = self.delegate
         else { return }
             
-        delegate.scanCompleted(withCode: scannedValue)
+        delegate.scanCompleted(with: scannedValue)
     }
     
     public func requestCaptureSessionStartRunning() {

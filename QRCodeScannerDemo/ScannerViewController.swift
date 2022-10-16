@@ -11,6 +11,29 @@ import AVFoundation
 class ScannerViewController: UIViewController {
     
     var scanner: Scanner?
+
+    // UI initialisation in controller just for demo, should be in different class
+    private(set) lazy var messageLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.textColor = UIColor.black
+        label.backgroundColor = UIColor.red
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private func setupMessageLabelView() {
+        messageLabel.text = "NO QR code data"
+        self.view.addSubview(messageLabel)
+        
+        NSLayoutConstraint.activate([
+            messageLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            messageLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            messageLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            messageLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
+            messageLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100.0)
+        ])
+    }
     
     // MARK: ViewController life cycle
     override func viewDidLoad() {
@@ -22,6 +45,7 @@ class ScannerViewController: UIViewController {
         else { return }
 
         scanner.requestCaptureSessionStartRunning()
+        setupMessageLabelView()
     }
 }
 
@@ -53,7 +77,7 @@ extension ScannerViewController: ScannerDelegate {
         return self
     }
     
-    func scanCompleted(withCode code: String) {
-        print(code)
+    func scanCompleted(with code: String) {
+        messageLabel.text = code
     }
 }
